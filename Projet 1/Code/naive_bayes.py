@@ -3,7 +3,7 @@ University of Liege
 ELEN0062 - Introduction to machine learning
 Project 1 - Classification algorithms
 """
-#! /usr/bin/env python
+# ! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -17,9 +17,8 @@ from plot import plot_boundary
 
 class GaussianNaiveBayes(BaseEstimator, ClassifierMixin):
 
-
     def fit(self, X, y):
-        """Fit a Gaussian navie Bayes model using the training set (X, y).
+        """ Fit a Gaussian naive Bayes model using the training set (X, y).
 
         Parameters
         ----------
@@ -34,6 +33,7 @@ class GaussianNaiveBayes(BaseEstimator, ClassifierMixin):
         self : object
             Returns self.
         """
+        
         # Input validation
         X = np.asarray(X, dtype=np.float)
         if X.ndim != 2:
@@ -45,12 +45,12 @@ class GaussianNaiveBayes(BaseEstimator, ClassifierMixin):
 
         # ====================
         # TODO your code here.
-        # ====================
+        # ===================
 
         return self
 
     def predict(self, X):
-        """Predict class for X.
+        """ Predict class for X.
 
         Parameters
         ----------
@@ -63,14 +63,16 @@ class GaussianNaiveBayes(BaseEstimator, ClassifierMixin):
             The predicted classes, or the predict values.
         """
 
-        # ====================
-        # TODO your code here.
-        # ====================
+        y = np.zeros(len(X))
+        predict = self.predict_proba(X)
 
-        pass
+        for i, p in enumerate(predict):
+            y[i] = np.where(p == np.amax(p))
+
+        return y
 
     def predict_proba(self, X):
-        """Return probability estimates for the test data X.
+        """ Return probability estimates for the test data X.
 
         Parameters
         ----------
@@ -90,6 +92,6 @@ class GaussianNaiveBayes(BaseEstimator, ClassifierMixin):
 
         pass
 
+
 if __name__ == "__main__":
-    from data import make_data
-    from plot import plot_boundary
+    pass
