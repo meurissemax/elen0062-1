@@ -10,6 +10,10 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
+from matplotlib import rc
+
+rc('text', usetex=True)
+
 def make_cmaps():
     """
     Return
@@ -71,8 +75,8 @@ def plot_boundary(fname, fitted_estimator, X, y, mesh_step_size=0.1, title=""):
     plt.figure()
     try:
         plt.title(title)
-        plt.xlabel("X_0")
-        plt.ylabel("X_1")
+        plt.xlabel("$X_0$")
+        plt.ylabel("$X_1$")
 
         # Put the result into a color plot
         plt.contourf(xx, yy, Z, cmap=bg_map, alpha=.8)
@@ -82,6 +86,6 @@ def plot_boundary(fname, fitted_estimator, X, y, mesh_step_size=0.1, title=""):
         plt.xlim(xx.min(), xx.max())
         plt.ylim(yy.min(), yy.max())
 
-        plt.savefig("{}.pdf".format(fname))
+        plt.savefig("outputs/{}.pdf".format(fname))
     finally:
         plt.close()
