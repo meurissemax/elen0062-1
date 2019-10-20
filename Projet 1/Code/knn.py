@@ -2,6 +2,10 @@
 University of Liege
 ELEN0062 - Introduction to machine learning
 Project 1 - Classification algorithms
+
+Authors :
+    - Maxime Meurisse
+    - Valentin Vermeylen
 """
 # ! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -21,7 +25,7 @@ from plot import plot_boundary
 if __name__ == "__main__":
     # General variables
     datasets = [make_data1, make_data2]
-    n_samples, p_test = 2000, 0.925
+    n_samples, p_test = 2000, 0.925  # p_test : proportion of testing points
     n_neighbors = [1, 5, 10, 75, 100, 150]
 
     ##############
@@ -29,7 +33,7 @@ if __name__ == "__main__":
     ##############
 
     # Variables
-    n_show = int(0.25 * (p_test * n_samples))
+    n_show = int(0.25 * (p_test * n_samples))  # number of points to plot
 
     # Apply the algorithm on each dataset
     for f in datasets:
