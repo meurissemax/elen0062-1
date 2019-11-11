@@ -91,6 +91,6 @@ if __name__ == "__main__":
     x_label = 'depth'
     x_legend = ['$' + str(depth) + '$' for depth in max_depth]
 
-    bar_chart(accuracies_mean, x_label, 'mean', x_legend, 'outputs/dt_accuracies_mean.pdf')
-    bar_chart(accuracies_std, x_label, 'standard deviation', x_legend, 'outputs/dt_accuracies_std.pdf')
+    bar_chart(accuracies_mean, x_label, 'mean', x_legend, '../products/dt_accuracies_mean.pdf')
+    bar_chart(accuracies_std, x_label, 'standard deviation', x_legend, '../products/dt_accuracies_std.pdf')
     """

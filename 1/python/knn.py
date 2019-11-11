@@ -77,7 +77,7 @@ if __name__ == "__main__":
     # Plot results
     x_label = 'number of neighbors'
     y_label = 'accuracy'
-    fig_name = 'outputs/knn_kfold_scores.pdf'
+    fig_name = '../products/knn_kfold_scores.pdf'
 
     line_chart(k_neighbors, accuracies_mean, x_label, y_label, fig_name)
     """

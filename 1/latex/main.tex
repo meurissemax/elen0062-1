@@ -1,0 +1,58 @@
+\documentclass[a4paper, 12pt]{article}
+
+\def\languages{french, english}
+
+%%%%%%%%%%%%%%%%%%% Libraries
+
+\input{include/libraries/bibliography.tex}
+\input{include/libraries/default.tex}
+\input{include/libraries/figures.tex}
+\input{include/libraries/informatics.tex}
+\input{include/libraries/mathematics.tex}
+\input{include/libraries/theorems.tex}
+\input{include/libraries/units.tex}
+
+\input{include/languages/french.tex}
+
+%%%%%%%%%%%%%%%%%%% Additional packages
+
+\usepackage{subcaption}
+
+%%%%%%%%%%%%%%%%%%% Titlepage
+
+\def\logopath{resources/pdf/logo-uliege.pdf}
+\def\toptitle{University of Liège}
+\title{Classification algorithms : Report}
+\def\subtitle{Introduction to machine learning}
+%\def\authorhead{Author}
+\author{
+    Maxime \textsc{Meurisse} (20161278)\\
+    Valentin \textsc{Vermeylen} (20162864)\\
+}
+%\def\rightauthorhead{}
+%\def\rightauthor{}
+\def\context{Master in Civil Engineering, specialization in {\em Intelligent Systems}}
+\date{Academic year 2019-2020}
+
+%%%%%%%%%%%%%%%%%%% Options
+
+\geometry{paper=a4paper,top=2.5cm,bottom=2.5cm,right=2cm,left=2cm}
+\fancyhead[R]{}
+\renewcommand{\thesubsection}{\arabic{subsection}.}
+\renewcommand{\thesubsubsection}{(\alph{subsubsection})}
+
+%%%%%%%%%%%%%%%%%%% Document
+
+\begin{document}
+    % ----- Titlepage ----- %
+    \input{include/titlepages/default.tex}
+    
+    % ----- Decision tree ----- %
+    \input{sections/decision_tree.tex}
+    
+    % ----- K-nearest neighbors ----- %
+    \input{sections/k_nearest_neighbors.tex}
+    
+    % ----- Naive Bayes classifier ----- %
+    \input{sections/naive_bayes_classifier.tex}
+\end{document}

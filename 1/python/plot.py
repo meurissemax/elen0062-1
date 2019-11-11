@@ -86,6 +86,6 @@ def plot_boundary(fname, fitted_estimator, X, y, mesh_step_size=0.1, title=""):
         plt.xlim(xx.min(), xx.max())
         plt.ylim(yy.min(), yy.max())
 
-        plt.savefig("outputs/{}.pdf".format(fname))
+        plt.savefig("../products/{}.pdf".format(fname))
     finally:
         plt.close()
