@@ -1,13 +1,28 @@
-# General
+##########
+# System #
+##########
+
+# macOS
 .DS_Store
-__pycache__/
 
-# Project 1
-Projet 1/Code/outputs/
-Projet 1/Code/extra/
-Projet 1/Rapport/*
-!Projet 1/Rapport/main.pdf
 
-# Project 2
-Projet 2/Rapport/*
-!Projet 2/Rapport/main.pdf
+##########
+# Python #
+##########
+
+**/__pycache__/
+
+
+##########
+# Others #
+##########
+
+**/products/
+**/resources/
+
+
+##############
+# Exceptions #
+##############
+
+!**/latex/resources/
