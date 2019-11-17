@@ -1,0 +1,131 @@
+% ----- Q3 ----- %
+\section{Bias and variance estimation}
+
+% ----- Q3.a
+\subsubsection{{\it Protocol for a given point}}\label{Q3.a}
+The following protocol is used to estimate the residual error, the squared bias and the variance for a given point $x_0$ and for a supervised learning algorithm.\par
+\paragraph{Remark} In the protocol, $x_0$ can refer to a single feature or multiple features. In the case of multiple features, when we talk about comparing $x_0$ to a value, it will be a question of comparing the whole tuple of values to the other tuple.\par
+First, since we assume that we can generate an infinite number of samples, we generate a large number of datasets (for example, \num{30}) each containing a large number of samples $(x, y)$ (for example, \num{1000}).\newline
+NB : Were we not limited by computational power, we could take an infinite number of datasets containing each an infinite number of samples to estimate these values perfectly.\par
+Secondly, we select in each of the datasets all the values of $y$ whose associated $x$ is $x_0$. These values will be represented by $y_{x_0}^{(i)}$.\par
+Thirdly, we instantiate one model (always the same) per dataset and we train each model on one of the datasets. Each model is then asked to provide the value associated with $x_0$. These values will be represented by $\hat{y}_{x_0}^{(i)}$.\par
+Finally, to estimate the residual error, the variance of $y_{x_0}$ is computed, to estimate the square bias, the difference squared between the mean of $y_{x_0}$ and the mean of $\hat{y}_{x_0}$ is computed and to estimate the variance, the variance of $\hat{y}_{x_0}$ is computed.
+
+% ----- Q3.b
+\subsubsection{{\it Adapted protocol}}\label{Q3.b}
+The following protocol is used to estimate the mean value of the residual error, squared bias and variance (as defined in section \ref{Q3.a}).\par
+First, the protocol described in section \ref{Q3.a} is used to calculate the residual error, squared bias and variance for each point $x_i$ generated in the datasets.\par
+Then the average on all $x$ of all residual errors, squared bias and variances obtained is computed and these are the values we need.
+
+% ----- Q3.c
+\subsubsection{{\it Case of a finite number of samples}}
+The protocols described above will still be usable, however their results may not be reliable.\par
+Indeed, if we have a small number of samples, the datasets we create will contain a very small number of data (for example, if we have \num{50} samples, we can create \num{5} datasets of \num{10} samples each). The models will therefore be trained on a very small number of data and will give poor results as there will be a lot of underfitting.\par
+If the trained models are not good and their results are not reliable, the residual error, squared bias and variance calculated on the basis of these models will not be reliable and significant either. Furthermore, to apply the protocols, we need to have multiple points that are at the same $x_0$, which cannot happen if we have too small datasets. The protocol \ref{Q3.a} relies almost entirely on the fact that there will be many samples having the same input value $x_0$. If it was not the case, we couldn't compute the desired components of the error in a satisfying manner. For protocol \ref{Q3.b}, we also need to have a lot of samples to accurately approximate the mean values over the input space, otherwise we are too dependent on the dataset itself. To conclude, if we do not have enough values for the same $x_0$ and not enough $x_0$, the protocols are not appropriate anymore. We therefore need lots of sample for our protocols to be appropriate.
+
+% ----- Q3.d
+\subsubsection{{\it Application of the protocol}}
+The script for this question, applying the protocol described in section \ref{Q3.a}, can be found in file \texttt{Q3d.py} attached to this report.\par
+In order to facilitate the recovery of the values of $y$ associated with an $x_i$ value (or tuple of values), only one vector containing the samples of all datasets was generated. This vector is then divided into sub-vectors to train the different models.\par
+For this question, we used a dataset of \num{10000} samples which we divided into \num{10} training sets of \num{1000} samples each.\par
+All generated samples are shown in figure \ref{fig:Q3d_data}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/pdf/Q3d_data.pdf}
+    \caption{All generated samples (\num{10000})}
+    \label{fig:Q3d_data}
+\end{figure}
+For {\bf linear regression}, the Ridge algorithm was chosen. For {\bf non linear regression}, the k nearest neighbors regressor was chosen.\par
+The residual error, squared bias, variance and expected error as a function of $x$ for both cases are shown in figure \ref{fig:Q3d_error}. In order to facilitate their comparison, all elements are represented on the same figure with a logarithmic scale.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3d_Ridge.pdf}
+        \caption{Ridge regression}
+        \label{fig:Q3d_ridge}
+    \end{subfigure}
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3d_KNeighborsRegressor.pdf}
+        \caption{K neighbors regression}
+        \label{fig:Q3d_kneighborsregressor}
+    \end{subfigure}
+    \noskipcaption{Estimation of the residual error, the squared bias, the variance and the expected error as a function of $x$}
+    \label{fig:Q3d_error}
+\end{figure}
+In the case of {\bf linear regression}, we find that the expected error is quite close to the squared bias. This result seems logical since linear regression is not at all appropriate in this case. Indeed, linear algorithms tend to have a higher bias than non-linear ones, as the simplifying assumptions they make (quasi-linearity of $y$ given $x_r$ here) usually fail to meet the more complex reality, inducing larger errors\footnote{\href{https://machinelearningmastery.com/gentle-introduction-to-the-bias-variance-trade-off-in-machine-learning/}{https://machinelearningmastery.com/gentle-introduction-to-the-bias-variance-trade-off-in-machine-learning/}}.\par
+Indeed, it is assumed that the regression obtained is a horizontal curve whose equation must be very similar to $y = 0$ because the distribution is quite \og{}symmetric\fg{} around $y=0$ (the figure is not shown here but it is indeed the shape we obtain when running our codes). As a result, the regression gives good results for samples corresponding to $x_r < -5$ and $x_r > 5$ as their $y$ values are close to $0$, as seen in figure \ref{fig:Q3d_data}. However, between these two values, the regressed line does not approximate well the real curve (the effect of the sinus is more prevalent as it is less dampened for these $x_r$), thus increasing the approximation error.\par
+This phenomenon can be observed in figure \ref{fig:Q3d_ridge} : the bias has \num{4} humps, one per sinus oscillation. The two small extreme humps correspond to the two extreme oscillations, and the two large middle humps correspond to the two large oscillations. The bias is greater in these regions because the hypothesis of linearity is more false than on the \og{}sides\fg{}, and so the difference between the value estimated (which is close to $0$) and the real value has roughly the shape of the sine itself, with only negative concavity because the bias is squared.\par
+The variance, on the other hand, remains quite low. Being clearly in the presence of under fitting, this observation is logical. Indeed, as we take $1000$ samples in our learning sets, their distribution will not change greatly from one learning set to another, and thus will not greatly impact the predictions. Had we taken a much smaller learning set size, we would have observed a greater variance, as the distributions of the samples would have been more varied from one dataset to another, impacting more the prediction. The variance also seems to be independent of $x_r$, and that is because the algorithm will predict a line close to $y = 0$ for all $x_r$. \par
+Finally, the residual error is almost constant as it is independent from the input (it is a Gaussian noise).\par
+In the case of {\bf non-linear regression}, it is the residual error that dominates (see figure \ref{fig:Q3d_kneighborsregressor}) given our parameters. Bias and variance are relatively low. These results show us that non-linear regression is better suited to this case, as figure \ref{fig:Q3d_data} suggested. Indeed, KNN works quite well in this situation as we can generate a lot of samples and the training is done on 1000 of them. The value at any given point is the mean of its 5 closest neighbours, and as they are quite close due to the large training set we used, the bias is small. Having training samples that are uniformly distributed and quite dense, we can have really good approximations, but we cannot act on the residual error (it is the smallest possible error we can reach as it is random noise in the output). The variance is also small because we will likely find similar (close) samples for different datasets as we have a high number of training samples. 
+
+% ----- Q3.e
+\subsubsection{{\it Application of the protocol for different input variations}}
+The script for this question, applying the protocol described in section \ref{Q3.b}, can be found in file \texttt{Q3e.py} attached to this report.\par
+The mean values of the squared error, the residual error, the squared bias and the variance for multiple variations of some parameters are described in the following sections. In order to facilitate their comparison, all elements are represented on the same figure with a logarithmic scale.\par
+By default, we used 10 training sets of 1000 samples each with 0 irrelevant variable. The default complexity of our models is $\alpha = 1.0$ for Ridge and $n\_neighbors = 5$ for K neighbors regressor.\par
+In the following sections, when we vary a quantity, we take the default values of the others.
+
+% Function of the size of the learning set
+\subsubsection*{Function of the size of the learning set}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_Ridge_size_ls.pdf}
+        \caption{Ridge regression}
+    \end{subfigure}
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_KNeighborsRegressor_size_ls.pdf}
+        \caption{K neighbors regression}
+    \end{subfigure}
+    \noskipcaption{Mean of the error and its terms as a function of the size of the learning set}
+\end{figure}
+For both models, it can be seen that the residual error is constant after a given size (although it has been said in Q3c that the protocols are inappropriate for small sizes of the learning set, we still included the beginning). This result is unsurprising because the residual error represents the noise in the data and is normally independent of the size of the dataset. The rise in the beginning comes from the fact that our protocol does not approximate well the different values for small sizes of datasets. It should be dismissed.\par
+The squared bias remains constant for the linear model and decreases for the non-linear model up to a given point. This shows that the linear model is not adapted (even if the size of the learning set is increased, the quality of the regression does not improve). As the distribution of $y$ oscillates quite symmetrically around $0$, no matter the number of samples we will take, given that the sampling is uniform on the input space, which is the case, the squared bias will tend to stay the same as the prediction will always be something in the lines of $\hat{y} = 0$ because we will have a roughly symmetrical sampling of values around $y = 0$. This also highlights the fact that the non-linear model is more adapted to that problem (the larger the learning set, the lower the error).\newline
+For KNN, the bias is high for small learning sets because the learning samples will be few and the prediction will probably be based on farther, less relevant samples, whereas, for larger datasets, we will find samples that are closer to our point, and so the bias decreases. (However, we can see that, after a given size of about 1000 samples, the mean expected error for KNN does not decrease anymore. Indeed, adding more samples will not change greatly the minimal obtainable error as we already have enough samples that are close enough to the point we try to evaluate.) \par
+In both cases, the variance decreases. Indeed, with a small amount of data, the models train on a too restricted vision of the input space leading to poor results and high variance. Specific learning sets lead to highly different results for smaller sizes, and so the variance is high. For larger datasets, the learning samples will always be located roughly at the same positions, and so the predictions will not vary much among the datasets, leading to a smaller variance. The larger the size of the learning set, the better the models will be trained and the more the variance will decrease (up to a given point for KNN as, for very large learning sets, we will have almost always the same-or very similar-points counted as neighbors, and so the variance will not decrease anymore). It is thus unnecessary to have larger learning sets because the variance becomes negligible for the linear regression (and is the only metrics that changes for bigger sizes), and because nothing decreases anymore for KNN.\par
+
+% Function of the model complexity
+\subsubsection*{Function of the model complexity}
+For the linear model, the complexity is the value of $\alpha$ and, for KNN, it is the number of neighbors.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_Ridge_model_complexity.pdf}
+        \caption{Ridge regression}
+    \end{subfigure}
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_KNeighborsRegressor_model_complexity.pdf}
+        \caption{K neighbors regression}
+    \end{subfigure}
+    \noskipcaption{Mean of the error and its terms as a function of the model complexity}
+\end{figure}
+In both cases, as before, the residual error remains constant; it does not depend on the complexity of the model.\par
+In the linear model, the expected error is dominated by the squared bias which remains constant and high. Indeed, when we take a look at the learning samples, no matter the value of $\alpha$, the predicted curve will always tend to be close to $y = 0$ as a result of the symmetry of f($\mathbf{x}$). This shows once again that the linear model is not suitable : no matter how complex the model, a big error is made and it does not decrease.\par
+In the non-linear model, the squared bias increases a lot with the number of neighbors taken into consideration. It is easily understood as, the more samples you take into account, the more uncorrelated samples are present. To have a small bias, you only want to rely on the few closest points, which gives better estimates and not estimates that averages sets containing lots of unrelated samples.\par
+For the linear model, the variance stays quite small and constant whatever the complexity, but tends to increase as $\alpha$ becomes closer to 1. It can be noted that it is advised on the sklearn documentation to keep the complexity well below 1 for the algorithm to provide good results and that the complexity is greater for smaller values of $\alpha$ (below 1). For the KNN, the variance decreases as the number of neighbors increases. That has already been discussed in question 2b, so we do not rewrite it here.\par
+Overall, this shows that the non-linear model is more suitable for this situation than the linear one, but that we must keep a relatively small complexity.
+
+% Function of the number of irrelevant variables added to the problem
+\subsubsection*{Function of the number of irrelevant variables added to the problem}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_Ridge_irrelevant_var.pdf}
+        \caption{Ridge regression}
+    \end{subfigure}
+    \begin{subfigure}{0.495\textwidth}
+        \includegraphics[width=\textwidth]{resources/pdf/Q3e_KNeighborsRegressor_irrelevant_var.pdf}
+        \caption{K neighbors regression}
+    \end{subfigure}
+    \noskipcaption{Mean of the error and its terms as a function of the number of irrelevant variables added to the problem}
+\end{figure}
+In both cases, as before, the residual error remains constant; it does not depend on the number of irrelevant variables added to the problem.\par
+In the linear model, the expected error is always dominated by the squared bias, which remains constant. The reason this is constant may be that we have a lot of samples in our learning sets (1000), and the values of the added variables are randomized between -10 and 10, so their mean will be 0. The regression is therefore not affected by these variables as their contributions will cancel one another.\par
+In the non-linear case, the expected error is mainly dominated by the square bias for higher number of irrelevant variables. This may be because adding more variables makes it so that samples that would have been close to one another are more distant, and distant samples may get closer to one another. Indeed, as the values of the added variables are uniform and random, adding more of them means that closer points may grow further apart. The values predicted are therefore worse and the bias increases because the $k$ closest neighbors are not the same as previously, while only $x_r$ should matter in the decision process. This shows that the non-linear model is suitable but that with noise in the features, its quality deteriorates and its results are less and less good. With a high number of irrelevant variables (3 or more), the expected error is the same as the linear model, meaning that the predictions obtained are no longer acceptable.\par
+The variance increases with the number of irrelevant variables for both models. For KNN, the predictions for each dataset depend on the particular neighbors, which are modified by the added features (to which we attribute random values), which means that the variance will increase. Indeed, these variables send the samples to different positions in the hyperspace as a result of their values, which are random, and so the variance cannot do anything but increase as two datasets will have otherwise close samples far away depending on the other variables. For the Ridge model, the hypersurface is different for different datasets as it must take into account more random dimensions, the values of the inputs in those varying from one dataset to another, but not too much, as seen in the discussion about the bias.
+
+% Conclusion
+\subsubsection*{Conclusion}
+The non-linear model (K-nearest neighbors regressor) is clearly preferable to the linear model. This result can be seen throughout the discussions in this section.\par
+In order to minimize the expected error of the non linear model, it is therefore necessary to increase the size of the learning set and limit the number of irrelevant variables to a minimum. Increasing the complexity (number of neighbors) does not provide us with a better model, on the contrary.

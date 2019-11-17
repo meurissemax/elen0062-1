@@ -43,7 +43,7 @@ if __name__ == '__main__':
     ############################
 
     # Variable element
-    n_samples = range(100, 20000, 1000)
+    n_samples = range(10, 3500, 100)
 
     # Fixed elements
     complexities = [1.0, 5]
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                 'mean expected error'
             ],
             'Q3e_' + model.__name__ + '_size_ls',
-            x_log=True,
+            x_log=False,
             y_log=True,
             y_lim=True
         )
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     ####################
 
     # Variable element
-    complexities = [np.logspace(-5, 1, num=5, base=10.0), range(5, 40, 5)]
+    complexities = [np.logspace(-5, 1, num=5, base=10.0), range(5, 1000, 20)]
 
     # Fixed element
     n_samples = 1000
@@ -183,7 +183,7 @@ if __name__ == '__main__':
         # Plot result
         multi_plot(
             n_irrelevants,
-            'mnumber of irrelevant variables',
+            'number of irrelevant variables',
             [m_noise, m_s_bias, m_var, m_exp_error],
             [
                 'mean residual error',
