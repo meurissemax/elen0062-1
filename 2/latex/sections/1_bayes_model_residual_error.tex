@@ -1,0 +1,139 @@
+% ----- Q1 ----- %
+\section{Bayes model and residual error in classification}
+
+% ----- Q1.a
+\subsubsection{{\it Analytical formulation of the Bayes model}}
+The zero-one error loss can be written :
+$$
+L(h_b(x_0, x_1), y) = 1 - \mathbbm{1}_{\{y\}}(h_b(x_0, x_1)) = \begin{cases}
+    0 \quad \text{if }h_b(x_0, x_1) = y\\
+    1 \quad \text{otherwise} \\
+\end{cases}
+$$ 
+Let's now derive $h_b(x_0, x_1)$ based on the information of the brief.\par
+The model being a Bayesian one :
+\begin{align*}
+    h_b(x_0, x_1) &= \underset{y_i}{\mathrm{argmax}}\ P(y_i | x_0, x_1)\\
+    &= \underset{y_i}{\mathrm{argmax}}\ \dfrac{p(x_0, x_1 | y_i) P(y_i)}{p(x_0, x_1)}
+\end{align*}
+As the class is selected uniformly, $P(y_i) = \num{0.5}$, it is thus constant (independent on the class $y_i$) and we can remove it from the argmax. $p(x_0, x_1)$ also doesn't depend on $y_i$, so we can remove it too. We have :
+\begin{align*}
+    h_b(x_0, x_1) &= \underset{y_i}{\mathrm{argmax}}\ p(x_0, x_1 | y_i)\\
+    &= \begin{cases}
+        +1 \quad \text{if }p(x_0, x_1 | y=+1) > p(x_0, x_1 | y=-1)\\
+        -1 \quad \text{otherwise}
+    \end{cases}
+\end{align*}
+Let's study the condition for which $h_b(x_0, x_1) = 1$ :
+$$
+\begin{array}{ccc}
+    p(x_0, x_1 | y=+1) & > &  p(x_0, x_1 | y=-1) \\
+\end{array}
+$$
+We need to express $p(x_0, x_1)$ in terms of $p(\alpha)$ and $p(r)$. That method has been provided to us in Stochastic class. The joint probability density of two random variables $X_0 = g_0(r, \alpha)$ and $X_1 = g_1(r, \alpha)$ is :
+$$
+p_{X_0, X_1}(x_0, x_1) = \dfrac{p_{r, \alpha}(r^{(1)}, \alpha^{(1)})}{|J(r^{(1)}, \alpha^{(1)})|} + ... + \dfrac{p_{r, \alpha}(r^{(k)}, \alpha^{(k)})}{|J(r^{(k)}, \alpha^{(k)})|}
+$$
+where the $(r^{(1)}, \alpha^{(1)})...(r^{(k)}, \alpha^{(k)})$ are the $k$ roots of the system : 
+$$
+\begin{cases}
+    g_0(r^{(i)}, \alpha^{(i)}) = x_0 \\
+    g_1(r^{(i)}, \alpha^{(i)}) = x_1
+\end{cases}
+$$
+and where
+$$
+J(r^{(i)}, \alpha^{(i)}) = \text{det}\begin{pmatrix}
+    \frac{\partial g_0}{\partial r} & \frac{\partial g_0}{\partial \alpha} \\
+    \frac{\partial g_1}{\partial r} & \frac{\partial g_1}{\partial \alpha}
+\end{pmatrix}
+$$
+In our case, we have :
+$$
+\begin{cases}
+    x_0 = r \cos{\alpha}\\
+    x_1 = r \sin{\alpha}
+\end{cases}
+$$
+and the root of that system is $r^{(1)} = \sqrt{x_0^2 + x_1^2}$, $\alpha^{(1)} = \arctan(\frac{x_1}{x_0})$, with $r > 0$ and $\alpha \in [0, 2\pi[$.
+\paragraph{Remark} We only consider the positive $r$, and thus positive $R^+$ and $R^-$. Indeed, the problem is left unchanged, as neglecting the case of negative $r$ associates them with other pairs of $x_0, x_1$. By symmetry, the probabilities are unchanged and the problem stays the same. The ranges of $r$ and $\alpha$ given above ensure a bijection between the two spaces.\par
+The Jacobian of our transformation is : 
+\begin{align*}
+    J(r^{(1)}, \alpha^{(1)}) &= \text{det}\begin{pmatrix}
+        \frac{\partial g_0}{\partial r} & \frac{\partial g_0}{\partial \alpha}\\
+        \frac{\partial g_1}{\partial r} & \frac{\partial g_1}{\partial \alpha}
+    \end{pmatrix} \bigg\rvert_{r^{(1)}, \alpha^{(1)}}\\
+    &= \text{det}\begin{pmatrix}
+        \cos{\alpha} & -r\sin{\alpha}\\
+        \sin{\alpha} & r\cos{\alpha}
+    \end{pmatrix}\bigg\rvert_{r^{(1)}, \alpha^{(1)}}\\
+    &= r^{(1)} = \sqrt{x_0^2 + x_1^2}\\
+\end{align*}
+which means that 
+$$
+p_{X_0, X_1 | y = +1}(x_0, x_1) = \dfrac{p_{r, \alpha | y = +1}(\sqrt{x_0^2 + x_1^2}, \arctan(\frac{x_1}{x_0}))}{\sqrt{x_0^2 + x_1^2}}
+$$
+and the same is true for the negative class (which only influences the distribution of $r$, not that of $\alpha$). We can safely assume that $p_{r, \alpha} = p_r p_\alpha$ because the two variables are independent, as $\alpha$ is uniformly distributed independently of $y$.\par
+We can therefore rewrite our condition for $h_b(x_0, x_1) = 1$ :
+$$
+\begin{array}{cccc}
+    & p(x_0, x_1 | y=+1) & > &  p(x_0, x_1 | y=-1) \\
+    \iff & \dfrac{p_{r, \alpha | y = +1}(\sqrt{x_0^2 + x_1^2}, \arctan(\frac{x_1}{x_0}))}{\sqrt{x_0^2 + x_1^2}} & > & \dfrac{p_{r, \alpha | y = -1}(\sqrt{x_0^2 + x_1^2}, \arctan(\frac{x_1}{x_0}))}{\sqrt{x_0^2 + x_1^2}}\\
+   \iff & p_{r| y = +1}(\sqrt{x_0^2 + x_1^2})\ p_{\alpha | y = +1}(\arctan(\frac{x_1}{x_0})) & > & p_{r| y = -1}(\sqrt{x_0^2 + x_1^2})\ p_{\alpha | y = -1}(\arctan(\frac{x_1}{x_0}))
+\end{array}
+$$
+As $\alpha$ is independent on $y$ and uniformly distributed, we can remove its probability from the inequality, as it is identical for both sides.\par
+The condition therefore writes :
+$$
+\begin{array}{cccc}
+    & p_{r| y = +1}(\sqrt{x_0^2 + x_1^2}) & > & p_{r| y = -1}(\sqrt{x_0^2 + x_1^2})\\
+    \iff & \dfrac{1}{\sqrt{2\pi\sigma^2}}\exp{-\dfrac{(\sqrt{x_0^2 + x_1^2} - R^+)^2}{2\sigma^2}} & > & \dfrac{1}{\sqrt{2\pi\sigma^2}}\exp{-\dfrac{(\sqrt{x_0^2 + x_1^2} - R^-)^2}{2\sigma^2}}\\
+    \iff & \exp{-\dfrac{(\sqrt{x_0^2 + x_1^2} - R^+)^2}{2\sigma^2}} & > & \exp{-\dfrac{(\sqrt{x_0^2 + x_1^2} - R^-)^2}{2\sigma^2}}\\
+    \iff & -\dfrac{(\sqrt{x_0^2 + x_1^2} - R^+)^2}{2\sigma^2} & > & -\dfrac{(\sqrt{x_0^2 + x_1^2} - R^-)^2}{2\sigma^2}\\
+\end{array}
+$$
+The last step coming from the fact that the exponential is a monotonic increasing function, so a greater argument implies a greater value of the function and vice-versa.\par
+By removing the denominator and arranging the terms, we finally have : 
+$$
+\begin{array}{cccc}
+   &  \dfrac{(\sqrt{x_0^2 + x_1^2} - R^+)^2}{2\sigma^2} & < & \dfrac{(\sqrt{x_0^2 + x_1^2} - R^-)^2}{2\sigma^2}\\
+   \iff & (\sqrt{x_0^2 + x_1^2} - R^+)^2 & < & (\sqrt{x_0^2 + x_1^2} - R^-)^2\\
+   \iff & 2\sqrt{x_0^2 + x_1^2} (R^--R^+) & < & (R^-)^2 - (R^+)^2\\
+   \iff & \sqrt{x_0^2 + x_1^2} & > & \dfrac{R^- + R^+}{2}
+\end{array}
+$$
+It has to be noted that we have assume that $R^-$ is smaller than $R^+$. If it is not the case, the decision process simply has to be inverted, as the inequality sign change is not applicable.\par
+In the end, we have : 
+$$
+h_b(x_0, x_1) = \begin{cases}
+    +1 \quad \text{if }\sqrt{x_0^2 + x_1^2}  > \dfrac{R^- + R^+}{2}\\
+    -1 \quad \text{otherwise}\\
+\end{cases}
+$$
+if $R^- < R^+$. If $R^- > R^+$, the conclusion simply has to be inverted. We do not discuss the case $R^- = R^+$ as the inputs would be independent of the output, and no prediction could be made on the basis of their values. 
+
+% ----- Q1.b
+\subsubsection{{\it Analytical formulation of the residual error}}
+The prediction of our Bayes model depending only on $r$, let's calculate the error as follow, as $\alpha$ is not taken into account for the prediction, and therefore does not impact the error :
+$$
+E_{x_{0}, x_{1}, y}\left\{1\left(y \neq h_{b}\left(x_{0}, x_{1}\right)\right)\right\} = E_{r, y}\left\{1\left(y \neq h_{b}\left(r\right)\right)\right\}
+$$
+As we are in classification, the generalization of the zero-one loss function is equivalent to the probability of wrongly predicting the output based on the input :
+\begin{align*}
+    E_{r,y}\left\{1\left(y \neq h_{b}\left(x_{0}, x_{1}\right)\right)\right\} &= P(y = +1, h_b(r) = -1) + P(y = -1, h_b(r) = +1)\\
+    &= P(h_b(r) = -1 | y = +1)P(y = +1) + P(h_b(r) = +1 | y = -1)P(y = -1)\\
+    &= \frac{1}{2}P(h_b(r) = -1 | y = +1) + \frac{1}{2}P(h_b(r) = +1 | y = -1)
+\end{align*}
+via the Bayes theorem and because $P(y = y_i) = 0.5$. We have that : 
+$$
+P(h_b(r) = -1 | y = +1) = \int_{0}^{\dfrac{R^+ + R^-}{2}} \dfrac{1}{\sqrt{2\pi\sigma^2}} \exp{-\dfrac{(r - R^+)^2}{2\sigma^2}} dr
+$$
+and
+$$
+P(h_b(r) = +1 | y = -1) = \int_{\dfrac{R^+ + R^-}{2}}^{+\infty} \dfrac{1}{\sqrt{2\pi\sigma^2}} \exp{-\dfrac{(r - R^-)^2}{2\sigma^2}} dr
+$$
+By replacing these probabilities by their analytical forms in the generalization error, we have an analytical formulation of the error which is hard to compute by hand. By replacing the values of $R^+$, $R^-$ and $\sigma$ from what is given in the brief and using \href{https://www.wolframalpha.com}{WolframAlpha} to solve it, we have that the error is equal to :
+$$
+E_{r, y}\left\{1\left(y \neq h_{b}\left(r\right)\right)\right\} = 0.5 * 0.0569231 + 0.5 * 0.0569231 = 0.0569231 \approx 5.7\%
+$$
+\paragraph{Remark} Had we had to compute the integrals by hand, we could either have used the error function $erf$ or the Gaussian random variable distribution tables seen in probability class (and we would have to normalize the distribution of $r$ to do so).

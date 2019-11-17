@@ -1,0 +1,97 @@
+% ----- Q2 ----- %
+\section{Bias and variance of the kNN algorithm}
+
+% ----- Q2.a
+\subsubsection{{\it Decomposition of the generalization error}}
+From the slide 12 of the lesson 6, we have that the generalization error decomposition is the following :
+$$
+E_{L S}\left\{E_{y}\left\{(y-\hat{y})^{2}\right\}\right\} = E_{y}\left\{\left(y-E_{y}\{y\}\right)^{2}\right\} + E_{L S}\left\{\left(E_{y}\{y\}-\hat{y}\right)^{2}\right\}
+$$
+and, from the slide 14, we get that : 
+$$
+E_{L S}\left\{\left(E_{y}\{y\}-\hat{y}\right)^{2}\right\} = \left(E_{y}\{y\}-E_{L S}\{\hat{y}\}\right)^{2}+E_{L S}\left\{\left(\hat{y}-E_{L S}\{\hat{y}\}\right)^{2}\right\}
+$$
+where
+\begin{align*}
+    E_{y}\left\{\left(y-E_{y}\{y\}\right)^{2}\right\} &= \text{var}_y\{y\}\\
+    \left(E_{y}\{y\}-E_{L S}\{\hat{y}\}\right)^{2} &= \text{bias}^2\\
+    E_{L S}\left\{\left(\hat{y}-E_{L S}\{\hat{y}\}\right)^{2}\right\} &= \text{var}_{LS}\{\hat{y}\}
+\end{align*}
+However, what we want is to find a function $\hat{y}(\mathbf{x})$ of several inputs, and so we average over the whole input space. For one learning set, the error becomes $E_{\mathbf{x}, y}\left\{(y-\hat{y}(\mathbf{x}))^{2}\right\}$. Over all the learning sets, we have that the error writes : 
+\begin{align*}
+    E &= E_{L S}\left\{E_{\mathbf{x}, y}\left\{(y-\hat{y}(\mathbf{x}))^{2}\right\}\right\}\\
+    &= E_{\mathbf{x}}\left\{E_{L S}\left\{E_{y | \mathbf{x}}\left\{\left(y-\hat{y}((x))^{2}\right\}\right\}\right\}\right.\\
+    &= E_{\mathbf{x}}\left\{\operatorname{var}_{y | \mathbf{x}}\{y\}\right\}+E_{\mathbf{x}}\left\{\operatorname{bias}^{2}(\mathbf{x})\right\}+E_{\mathbf{x}}\left\{\operatorname{var}_{L S}\{\hat{y}(\mathbf{x})\}\right\}
+\end{align*}
+\paragraph{Remark} This is taken from the slide 21.\par
+Finally, from the slide 22 (which derives an equality from the two last lines of the error decomposition above) we have that :
+\begin{align*}
+    E_{L S}\left\{E_{y | \mathbf{x}}\left\{(y-\hat{y}(\mathbf{x} ; L S, k))^{2}\right\}\right\} &= E_{y | \mathbf{x}}\left\{\left(y-h_{B}(\mathbf{x})\right)^{2}\right\} + \left(h_{B}(\mathbf{x})-E_{L S}\{\hat{y}(\mathbf{x})\}\right)^{2}\\
+    &+ E_{L S}\left\{\left(\hat{y}-E_{L S}\{\hat{y}(\mathbf{x})\}\right)^{2}\right\}    
+\end{align*}
+where $h_{B}(\mathbf{x})=E_{y | \mathbf{x}}\{y\}$.\par
+Given $\mathbf{x}$, we know the value of $y = f(\mathbf{x}) + \epsilon$, except for the $\epsilon$ which is a random variable.\par
+Therefore,
+\begin{align*}
+    E_{y | \mathbf{x}}\{y\} &= E\{f(\mathbf{x}) + \epsilon\}\\
+    &= E\{f(\mathbf{x})\}\\
+    &= f(\mathbf{x})
+\end{align*}
+because the expected value of a sum is equal to the sum of the expected values, $E\{\epsilon\} = 0$ as the mean of $\epsilon$ is $0$, and the expected value of a constant ($f(\mathbf{x})$) is that constant (as $\mathbf{x}$ is fixed beforehand).\par
+Plugging that into the equation (where LHS represents the left-hand side of the said equation), we get :
+$$
+LHS = E\left\{\left(f(\mathbf{x}) + \epsilon-f(\mathbf{x})\right)^{2}\right\} + \left(f(\mathbf{x})-E_{L S}\{\hat{y}(\mathbf{x})\}\right)^{2} + E_{L S}\left\{\left(\hat{y}-E_{L S}\{\hat{y}(\mathbf{x})\}\right)^{2}\right\}    
+$$
+We have that
+\begin{align*}
+    E\left\{\epsilon^{2}\right\} &= \text{var}\{\epsilon\} + E\{\epsilon\}^2\\
+    &= \sigma^2 + 0\\
+    &= \sigma^2
+\end{align*}
+via the expansion of the variance and the information we have about $\epsilon$.\par
+The last term of the sum is equivalent to the variance of $\hat{y}$ over all datasets, via the definition of the variance.\par
+As
+\begin{align*}
+    \hat{y} &= \frac{1}{k} \sum_{l=1}^k y_{(l)}\\
+    &= \frac{1}{k} \sum_{l=1}^k \left(f(\mathbf{x}_{(l)})+\epsilon\right)
+\end{align*}
+because, for the $kNN$ regression, the estimated value is the average of those of all neighbours. For a given $\mathbf{x}_{(l)}$, the value of $f(\mathbf{x}_{(l)})$ is not a random variable, and is thus a constant.\par
+Therefore,
+\begin{align*}
+    \text{var}_{L S}\left\{ \hat{y} \right\} &= \text{var}_{L S}\left\{ \frac{1}{k} \sum_{l=1}^k \left(f(\mathbf{x}_{(l)})+\epsilon\right) \right\}\\
+    &= \frac{1}{k^2} \text{var}_{L S}\left\{\sum_{l=1}^k \left(f(\mathbf{x}_{(l)})+\epsilon\right) \right\}\\
+    &= \frac{1}{k^2} \ k\ \text{var}_{L S}\left\{ \epsilon \right\}\\
+    &= \dfrac{\sigma^2}{k}
+\end{align*}
+Because $\text{var}\left\{ a X \right\} = a^2 \text{var}\left\{ X \right\}$, the variance of the sum of independent random variables is the sum of the variances and, finally, because $\text{var}\left\{ X + a \right\} = \text{var}\left\{ X \right\}$, $a$ being a constant here.\par
+For the second term,
+\begin{align*}
+    E_{L S}\left\{\hat{y}(\mathbf{x})\right\} &= E_{L S}\left\{ \frac{1}{k} \sum_{l=1}^k \left(f(\mathbf{x}_{(l)})+\epsilon\right) \right\}\\
+    &= \frac{1}{k} E_{L S}\left\{\sum_{l=1}^k \left(f(\mathbf{x}_{(l)})+\epsilon\right) \right\}\\
+    &= \frac{1}{k} E_{L S}\left\{\sum_{l=1}^k \left(f(\mathbf{x}_{(l)})\right) \right\}\\
+    &= \frac{1}{k} \sum_{l=1}^k \left(f(\mathbf{x}_{(l)})\right)
+\end{align*}
+Because $E\{aX\} = aE\{X\}$, $E\{A+X\} = E\{A\} + E\{X\}$, $E\{\epsilon\} = 0$ and $E\{f(\mathbf{x}_{(l)})\} = f(\mathbf{x}_{(l)})$ because the argument is a constant.\par
+By plugging all these results in the equation, we end up with what is given in the brief.
+\begin{comment}
+    From the slides of the lecture 6, we have that : 
+    $$\begin{array}{ccc}
+        E_{L S}\left\{E_{y | \mathbf{x}}\left\{(y-\hat{y}(\mathbf{x} ; L S, k))^{2}\right\}\right\} & = &  var_{y|\mathbf{x}}\left\{y \right\} + \left( E_{y|\mathbf{x}}\left\{y \right\} - E_{LS} \left\{ \hat{y}\right\}\right)^2 +  E_{LS}\left\{ \left( \hat{y} - E_{LS}\left\{ \hat{y}\right\}\right)^2\right\}\\
+    \end{array}
+    $$
+    Given the decomposition seen in class. We also know that $y = f(\mathbf{x}) + \epsilon$. By pushing that into the equation, we have : 
+    $$\begin{array}{ccc}
+        E_{L S}\left\{E_{y | \mathbf{x}}\left\{(y-\hat{y}(\mathbf{x} ; L S, k))^{2}\right\}\right\} & = &  \sigma_\epsilon^2 + \left( f(\mathbf{x}) - E_{LS} \left\{ \hat{y}\right\}\right)^2 + E_{LS}\left\{ \left( \hat{y} - E_{LS}\left\{ \hat{y}\right\}\right)^2\right\}\\
+    \end{array}
+    $$
+    Because $var_y{f(\mathbf{x}) + \epsilon} = var{\epsilon} = \sigma_\epsilon^2$ as $f(\mathbf{x})$ is a scalar, $E_y \{f(\mathbf{x}) + \epsilon\} = E_y \{f(\mathbf{x})\} = f(\mathbf{x})$ for the same reason, and because the expectation of $\epsilon$ is $0$.
+\end{comment}
+
+% ----- Q2.b
+\subsubsection{{\it Effect of the number of neighbours}}
+As can be seen in the previous decomposition, there is a term, $\sigma^2$, that is not affected by the number of neighbours $k$. That is the \textit{irreductible error}, and it is out of our control, even if we knew the actual $f(\mathbf{x})$. This term comes from the noise $\epsilon$ in the computation of $y$. It is the minimal error possibly atteinable.\par
+However, we can control the other two terms. The second is the bias and the third is the variance.\par
+The bias term will likely increase with $k$ in the case of this estimator, provided that $f$ is smooth enough. Indeed, for a small $k$, the few closest neighbours will have values of $f(\mathbf{x}_{(l)})$ close to $f(\mathbf{x})$, and so the average of these values itself should be close to $f(\mathbf{x})$, which makes the bias close to $0$.\par
+Conversely, as $k$ increases, the neighbours are further away from $\mathbf{x}$, and so anything can happen. The values of $f(\mathbf{x}_{(l)})$ could become much more different from that of $f(\mathbf{x})$ and generate a big bias, or maybe not if $f(\mathbf{x})$ is more constant over the dataset space, but that is usually not the case, and so the bias increases with $k$.\par
+For the variance, it decreases as the inverse of $k$, so a big $k$ yields a small variance because we are not basing our decision only on a few close points. As $k$ grows to infinity, the model becomes less complex as we will predict the majority class for all test points. Conversely, with a small $k$, the model will be more sensitive on the training data as its decision will be based on close, specific points that depends more heavily on the specific learning set, and so its variance will increase as a result because two different learning sets will not have identical samples. For a higher number of neighours, that effect is mitigated as we start to encompass a bigger region in our decision process, and so the variance decreases. For bigger regions of the space of inputs, the variance in the sampling for two different datasets will be smaller than for smaller regions, and thus the overall variance decreases.\par
+As we can see, there is therefore a tradeoff to be made between bias and variance as the effect of $k$ on each is inverse and as they both play a role in the generalization error.

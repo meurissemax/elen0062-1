@@ -15,7 +15,7 @@ Authors :
 import numpy as np
 
 from sklearn.linear_model import Ridge
-from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
 
 
 ###########
@@ -69,8 +69,8 @@ class Protocol:
         for X_train, y_train in datasets:
             if model == Ridge:
                 instance = model(alpha=complexity)
-            elif model == SVR:
-                instance = model(gamma=complexity)
+            elif model == KNeighborsRegressor:
+                instance = model(n_neighbors=complexity)
             else:
                 instance = model()
 
