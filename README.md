@@ -9,4 +9,5 @@ Projects realized as part of the *Introduction to machine learning* course given
 ## Authors
 
 * **Maxime Meurisse** - [meurissemax](https://github.com/meurissemax)
+* **François Rozet** - [Donshel](https://github.com/Donshel) (for project 3 only)
 * **Valentin Vermeylen** - [ValentinVermeylen](https://github.com/ValentinVermeylen)
