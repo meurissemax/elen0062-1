@@ -18,7 +18,7 @@ import utils
 
 sys.path.insert(1, '../models')
 
-from svm import Model
+from knn import Model
 
 
 #####################
