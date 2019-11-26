@@ -13,7 +13,7 @@ Authors :
 # Libraries #
 #############
 
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
 
 
 #########
@@ -22,6 +22,6 @@ from sklearn.tree import DecisionTreeClassifier
 
 class Model:
     def get_model(self):
-        model = DecisionTreeClassifier()
+        model = SVC(gamma='scale', probability=True)
 
         return model

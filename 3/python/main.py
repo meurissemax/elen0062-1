@@ -18,7 +18,7 @@ import utils
 
 sys.path.insert(1, '../models')
 
-from dt import Model
+from svm import Model
 
 
 #####################
