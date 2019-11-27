@@ -5,7 +5,7 @@ Project 3 - Activity prediction for chemical compounds
 
 Authors :
     - Maxime Meurisse
-    - François Rozet
+    - Francois Rozet
     - Valentin Vermeylen
 """
 
