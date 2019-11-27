@@ -22,6 +22,7 @@ from models import MLP
 from models import SVM
 from models import MeanClassifier
 
+import kernels
 
 ##############
 # Parameters #
