@@ -18,7 +18,10 @@ import utils
 
 sys.path.insert(1, '../models')
 
-from knn import Model
+from knn import Model as knn
+from lda import Model as lda
+from mlp import Model as mlp
+from svm import Model as svm
 
 
 #####################
@@ -27,6 +30,8 @@ from knn import Model
 
 TRAINING_SET = '../resources/csv/training_set.csv'
 TEST_SET = '../resources/csv/test_set.csv'
+
+MODELS = [knn, lda, mlp, svm]
 
 
 ########
@@ -48,16 +53,28 @@ if __name__ == '__main__':
     X_LS = utils.create_fingerprints(LS['SMILES'].values)
     y_LS = LS['ACTIVE'].values
 
-    # Build and train the model
-    model = Model()
-    model.train(X_LS, y_LS)
+    # Build and train models
+    models = list()
+
+    for model in MODELS:
+        m = model()
+        m.train(X_LS, y_LS)
+        
+        models.append(m)
 
     # PREDICTION
 
     X_TS = utils.create_fingerprints(TS['SMILES'].values)
 
-    # Predict
-    y_pred = model.get_pred(X_TS)
+    # Predict for each model
+    for i, model in enumerate(models):
+    	if i == 0:
+    		y_pred = model.get_pred(X_TS)
+    	else:
+        	y_pred += model.get_pred(X_TS)
+
+    # Get the mean of all predictions
+    y_pred /= len(models)
 
     # Estimated AUC of the model
     auc_predicted = 0.50
