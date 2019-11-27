@@ -39,12 +39,7 @@ class MLP(MLPClassifier, ActivityClassifier):
     pass
 
 class SVM(SVC, ActivityClassifier):
-    @staticmethod
-    def kernel(X, Y):
-        
-        pass
-
-    def __init__(self, kernel='linear', probability=True, *args, **kwargs):
+    def __init__(self, kernel='rbf', probability=True, *args, **kwargs):
         super().__init__(kernel=kernel, probability=probability, *args, **kwargs)
 
 class MeanClassifier(ActivityClassifier):
