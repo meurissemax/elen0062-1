@@ -5,7 +5,7 @@ Project 3 - Activity prediction for chemical compounds
 
 Authors :
     - Maxime Meurisse
-    - François Rozet
+    - Francois Rozet
     - Valentin Vermeylen
 """
 
@@ -73,6 +73,10 @@ def create_fingerprints(chemical_compounds):
 
     for i in range(n_chem):
         m = Chem.MolFromSmiles(chemical_compounds[i])
+
+        if not m:
+            continue
+
         X[i, :] = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=n_bits)
 
     return X
