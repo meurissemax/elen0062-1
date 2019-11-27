@@ -34,10 +34,8 @@ TEST_SET = '../resources/csv/test_set.csv'
 ########
 
 if __name__ == '__main__':
-    # Load training data
+    # Load training and testing data
     LS = utils.load_from_csv(TRAINING_SET)
-
-    # Load test data
     TS = utils.load_from_csv(TEST_SET)
 
     #########
@@ -50,16 +48,16 @@ if __name__ == '__main__':
     X_LS = utils.create_fingerprints(LS['SMILES'].values)
     y_LS = LS['ACTIVE'].values
 
-    # Build the model
-    model = Model().get_model()
-    model.fit(X_LS, y_LS)
+    # Build and train the model
+    model = Model()
+    model.train(X_LS, y_LS)
 
     # PREDICTION
 
-    X_TS = utils.create_fingerprints(TS["SMILES"].values)
+    X_TS = utils.create_fingerprints(TS['SMILES'].values)
 
     # Predict
-    y_pred = model.predict_proba(X_TS)[:, 1]
+    y_pred = model.get_pred(X_TS)
 
     # Estimated AUC of the model
     auc_predicted = 0.50
