@@ -13,25 +13,26 @@ Authors :
 # Libraries #
 #############
 
-import sys
+import os
 import utils
 
-sys.path.insert(1, '../models')
+from models import KNN
+from models import LDA
+from models import MLP
+from models import SVM
+from models import MeanClassifier
 
-from knn import Model as knn
-from lda import Model as lda
-from mlp import Model as mlp
-from svm import Model as svm
 
-
-#####################
-# General variables #
-#####################
+##############
+# Parameters #
+##############
 
 TRAINING_SET = '../resources/csv/training_set.csv'
 TEST_SET = '../resources/csv/test_set.csv'
 
-MODELS = [knn, lda, mlp, svm]
+DESTINATION = '../products/'
+
+MODEL = MeanClassifier([KNN(n_neighbors=15), MLP(), SVM()])
 
 
 ########
@@ -39,47 +40,28 @@ MODELS = [knn, lda, mlp, svm]
 ########
 
 if __name__ == '__main__':
-    # Load training and testing data
+    # Load training and test set
     LS = utils.load_from_csv(TRAINING_SET)
     TS = utils.load_from_csv(TEST_SET)
 
-    #########
-    # Model #
-    #########
-
-    # LEARNING
-
-    # Create fingerprint features and output
+    # Create fingerprint features and output of learning set
     X_LS = utils.create_fingerprints(LS['SMILES'].values)
     y_LS = LS['ACTIVE'].values
 
-    # Build and train models
-    models = list()
+    # Train model
+    MODEL.fit(X_LS, y_LS)
 
-    for model in MODELS:
-        m = model()
-        m.train(X_LS, y_LS)
-        
-        models.append(m)
-
-    # PREDICTION
-
+    # Create fingerprint features of test set
     X_TS = utils.create_fingerprints(TS['SMILES'].values)
 
-    # Predict for each model
-    for i, model in enumerate(models):
-    	if i == 0:
-    		y_pred = model.get_pred(X_TS)
-    	else:
-        	y_pred += model.get_pred(X_TS)
-
-    # Get the mean of all predictions
-    y_pred /= len(models)
+    # Predict
+    prob = MODEL.active_proba(X_TS)
 
     # Estimated AUC of the model
     auc_predicted = 0.50
 
-    # Making the submission file
-    fname = utils.make_submission(y_pred, auc_predicted, '../products/submission')
+    # Writing the submission file
+    os.makedirs(DESTINATION, exist_ok=True)
+    fname = utils.make_submission(prob, auc_predicted, DESTINATION + 'submission')
 
     print('Submission file "{}" successfully written'.format(fname))
