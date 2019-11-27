@@ -21,7 +21,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 #########
 
 class Model:
-    def get_model(self):
-        model = LinearDiscriminantAnalysis()
+    def __init__(self):
+        self.model = LinearDiscriminantAnalysis()
 
-        return model
+    def train(self, X_LS, y_LS):
+        self.model.fit(X_LS, y_LS)
+
+    def get_pred(self, X_TS):
+        return self.model.predict_proba(X_TS)[:, 1]

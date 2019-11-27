@@ -21,7 +21,11 @@ from sklearn.svm import SVC
 #########
 
 class Model:
-    def get_model(self):
-        model = SVC(gamma='scale', probability=True)
+    def __init__(self):
+        self.model = SVC(gamma='scale', probability=True)
 
-        return model
+    def train(self, X_LS, y_LS):
+        self.model.fit(X_LS, y_LS)
+
+    def get_pred(self, X_TS):
+        return self.model.predict_proba(X_TS)[:, 1]

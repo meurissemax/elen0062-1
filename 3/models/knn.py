@@ -21,7 +21,11 @@ from sklearn.neighbors import KNeighborsClassifier
 #########
 
 class Model:
-    def get_model(self):
-        model = KNeighborsClassifier(n_neighbors=15)
+    def __init__(self):
+        self.model = KNeighborsClassifier(n_neighbors=15)
 
-        return model
+    def train(self, X_LS, y_LS):
+        self.model.fit(X_LS, y_LS)
+
+    def get_pred(self, X_TS):
+        return self.model.predict_proba(X_TS)[:, 1]
