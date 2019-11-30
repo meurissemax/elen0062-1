@@ -16,13 +16,14 @@ Authors :
 import os
 import utils
 
-from models import KNN
-from models import LDA
-from models import MLP
-from models import SVM
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.model_selection import cross_val_score, ShuffleSplit
+
+from models import KNN, LDA, MLP, RFC, SVM
 from models import MeanClassifier
 
 import kernels
+
 
 ##############
 # Parameters #
@@ -33,7 +34,7 @@ TEST_SET = '../resources/csv/test_set.csv'
 
 DESTINATION = '../products/'
 
-MODEL = MeanClassifier([KNN(n_neighbors=15), MLP(), SVM()])
+MODEL = MeanClassifier([KNN(n_neighbors=17), SVM(), MLP()])
 
 
 ########
@@ -49,20 +50,30 @@ if __name__ == '__main__':
     X_LS = utils.create_fingerprints(LS['SMILES'].values)
     y_LS = LS['ACTIVE'].values
 
+    # Variance threshold
+    selector = VarianceThreshold()
+    selector.fit(X_LS)
+    X_LS = selector.transform(X_LS)
+
+    # Cross validation score
+    cv = ShuffleSplit(n_splits=5, test_size=0.25, random_state=0)
+    scores = cross_val_score(MODEL, X_LS, y_LS, cv=cv, scoring='roc_auc')
+
+    # Estimated AUC
+    AUC = scores.mean()
+
     # Train model
     MODEL.fit(X_LS, y_LS)
 
     # Create fingerprint features of test set
     X_TS = utils.create_fingerprints(TS['SMILES'].values)
+    X_TS = selector.transform(X_TS)
 
     # Predict
-    prob = MODEL.active_proba(X_TS)
-
-    # Estimated AUC of the model
-    auc_predicted = 0.50
+    prob = MODEL.predict_proba(X_TS)[:, -1]
 
     # Writing the submission file
     os.makedirs(DESTINATION, exist_ok=True)
-    fname = utils.make_submission(prob, auc_predicted, DESTINATION + 'submission')
+    fname = utils.make_submission(prob, AUC, DESTINATION + 'submission')
 
     print('Submission file "{}" successfully written'.format(fname))

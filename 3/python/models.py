@@ -15,9 +15,12 @@ Authors :
 
 import numpy as np
 
+from sklearn.base import BaseEstimator, ClassifierMixin
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
 
@@ -25,26 +28,32 @@ from sklearn.svm import SVC
 # Classes #
 ###########
 
-class ActivityClassifier():
-    def active_proba(self, X):
-        return self.predict_proba(X)[:, -1]
-
-class KNN(KNeighborsClassifier, ActivityClassifier):
+class KNN(KNeighborsClassifier):
     pass
 
-class LDA(LinearDiscriminantAnalysis, ActivityClassifier):
+class LDA(LinearDiscriminantAnalysis):
     pass
 
-class MLP(MLPClassifier, ActivityClassifier):
+class MLP(MLPClassifier):
     pass
 
-class SVM(SVC, ActivityClassifier):
-    def __init__(self, kernel='rbf', probability=True, *args, **kwargs):
-        super().__init__(kernel=kernel, probability=probability, *args, **kwargs)
+class RFC(RandomForestClassifier):
+    pass
 
-class MeanClassifier(ActivityClassifier):
-    def __init__(self, models):
+class SVM(SVC):
+    def __init__(self, kernel='rbf', probability=True, gamma='scale', C=1):
+        super().__init__(kernel=kernel, probability=probability, gamma=gamma, C=C)       
+
+class MeanClassifier(BaseEstimator, ClassifierMixin):
+    def __init__(self, models, weights=None, geometric=False):
+        if weights is None:
+            self.weights = [1] * len(models)
+        else:
+            self.weights = weights
+
         self.models = models
+
+        self.geometric = geometric
 
     def fit(self, X, y):
         for model in self.models:
@@ -54,10 +63,24 @@ class MeanClassifier(ActivityClassifier):
 
     def predict_proba(self, X):
         proba = np.zeros((X.shape[0], 2))
+        if self.geometric:
+            proba += 1
 
-        for model in self.models:
-            proba += model.predict_proba(X)
+        for i, model in enumerate(self.models):
+            temp = model.predict_proba(X)
+            if self.geometric:
+                proba *= temp ** self.weights[i]
+            else:
+                proba += temp * self.weights[i]
 
-        proba /= len(self.models)
+        n = sum(self.weights)
+        if self.geometric:
+            proba = proba ** (1 / n)
+        else:
+            proba /= n
 
         return proba
+
+    def predict(self, X):
+        y = np.argmax(self.predict_proba(X), axis=1)
+        return y
