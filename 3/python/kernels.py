@@ -45,6 +45,3 @@ def dice(X, Y):
 def tanimoto(X, Y):
     x, y, z = base(X, Y)
     return z / (x + y - z)
-
-def xand(X, Y):
-    return X.dot(np.transpose(Y)) + (1 - X).dot(np.transpose(1 - Y))
