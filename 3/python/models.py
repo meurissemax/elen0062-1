@@ -17,6 +17,7 @@ import numpy as np
 
 from sklearn.base import BaseEstimator, ClassifierMixin
 
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
@@ -27,6 +28,9 @@ from sklearn.svm import SVC
 ###########
 # Classes #
 ###########
+
+class DTC(DecisionTreeClassifier):
+    pass
 
 class KNN(KNeighborsClassifier):
     pass
@@ -42,18 +46,21 @@ class RFC(RandomForestClassifier):
 
 class SVM(SVC):
     def __init__(self, kernel='rbf', probability=True, gamma='scale', C=1):
-        super().__init__(kernel=kernel, probability=probability, gamma=gamma, C=C)       
+        super().__init__(
+            kernel=kernel,
+            probability=probability,
+            gamma=gamma,
+            C=C
+        )
 
 class MeanClassifier(BaseEstimator, ClassifierMixin):
-    def __init__(self, models, weights=None, geometric=False):
+    def __init__(self, models, weights=None):
         if weights is None:
             self.weights = [1] * len(models)
         else:
             self.weights = weights
 
         self.models = models
-
-        self.geometric = geometric
 
     def fit(self, X, y):
         for model in self.models:
@@ -63,21 +70,11 @@ class MeanClassifier(BaseEstimator, ClassifierMixin):
 
     def predict_proba(self, X):
         proba = np.zeros((X.shape[0], 2))
-        if self.geometric:
-            proba += 1
 
         for i, model in enumerate(self.models):
-            temp = model.predict_proba(X)
-            if self.geometric:
-                proba *= temp ** self.weights[i]
-            else:
-                proba += temp * self.weights[i]
+            proba += model.predict_proba(X) * self.weights[i]
 
-        n = sum(self.weights)
-        if self.geometric:
-            proba = proba ** (1 / n)
-        else:
-            proba /= n
+        proba /= sum(self.weights)
 
         return proba
 

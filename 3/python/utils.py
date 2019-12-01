@@ -49,7 +49,7 @@ def load_from_csv(path, delimiter=','):
     return pd.read_csv(path, delimiter=delimiter)
 
 
-def create_fingerprints(chemical_compounds):
+def morgan_fingerprints(chemical_compounds, n_bits=128, use_features=True):
     """Create a learning matrix 'X' with (Morgan) fingerprints
     from the 'chemical_compounds' molecular structures.
 
@@ -61,23 +61,14 @@ def create_fingerprints(chemical_compounds):
 
     Output
     ------
-    X : array [n_chem, 124]
+    X : array [n_chem, n_bits]
         generated (Morgan) fingerprints for each chemical compound, which
         represent presence or absence of substructures.
     """
 
-    n_chem = chemical_compounds.shape[0]
-    n_bits = 124
-
-    X = np.zeros((n_chem, n_bits))
-
-    for i in range(n_chem):
-        m = Chem.MolFromSmiles(chemical_compounds[i])
-
-        if not m:
-            continue
-
-        X[i, :] = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=n_bits)
+    X = [Chem.MolFromSmiles(x) for x in chemical_compounds]
+    X = [AllChem.GetMorganFingerprintAsBitVect(x, 2, nBits=n_bits, useFeatures=use_features) for x in X]
+    X = np.array(X)
 
     return X
 
