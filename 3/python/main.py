@@ -19,7 +19,7 @@ import utils
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import cross_val_score, ShuffleSplit
 
-from models import KNN, LDA, MLP, RFC, SVM
+from models import DTC, KNN, LDA, MLP, RFC, SVM
 from models import MeanClassifier
 
 import kernels
@@ -29,11 +29,14 @@ import kernels
 # Parameters #
 ##############
 
+# Paths to training and testing set
 TRAINING_SET = '../resources/csv/training_set.csv'
 TEST_SET = '../resources/csv/test_set.csv'
 
+# Path to export predictions
 DESTINATION = '../products/'
 
+# Model to train
 MODEL = MeanClassifier([KNN(n_neighbors=17), SVM(), MLP()])
 
 
@@ -47,10 +50,10 @@ if __name__ == '__main__':
     TS = utils.load_from_csv(TEST_SET)
 
     # Create fingerprint features and output of learning set
-    X_LS = utils.create_fingerprints(LS['SMILES'].values)
+    X_LS = utils.morgan_fingerprints(LS['SMILES'].values)
     y_LS = LS['ACTIVE'].values
 
-    # Variance threshold
+    # Variance threshold (feature selection)
     selector = VarianceThreshold()
     selector.fit(X_LS)
     X_LS = selector.transform(X_LS)
@@ -66,7 +69,7 @@ if __name__ == '__main__':
     MODEL.fit(X_LS, y_LS)
 
     # Create fingerprint features of test set
-    X_TS = utils.create_fingerprints(TS['SMILES'].values)
+    X_TS = utils.morgan_fingerprints(TS['SMILES'].values)
     X_TS = selector.transform(X_TS)
 
     # Predict

@@ -26,21 +26,26 @@ def base(X, Y):
     z = X.dot(np.transpose(Y))
     return x, y, z
 
+
 def manhattan(X, Y):
     n = X.shape[1]
     x, y, z = base(X, Y)
     return n - (x + y - 2 * z)
 
+
 def euclidean(X, Y):
     return np.sqrt(manhattan(X, Y))
+
 
 def cosine(X, Y):
     x, y, z = base(X, Y)
     return z / np.sqrt(x * y)
 
+
 def dice(X, Y):
     x, y, z = base(X, Y)
     return 2 * z / (x + y)
+
 
 def tanimoto(X, Y):
     x, y, z = base(X, Y)
