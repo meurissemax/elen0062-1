@@ -37,7 +37,7 @@ TEST_SET = '../resources/csv/test_set.csv'
 DESTINATION = '../products/'
 
 # Model to train
-MODEL = MeanClassifier([KNN(n_neighbors=17), SVM(), MLP()])
+MODEL = MeanClassifier([KNN(n_neighbors=17), SVM(), MLP(random_state=0), RFC(500, random_state=0)])
 
 
 ########
