@@ -32,17 +32,22 @@ from sklearn.svm import SVC
 class DTC(DecisionTreeClassifier):
     pass
 
+
 class KNN(KNeighborsClassifier):
     pass
+
 
 class LDA(LinearDiscriminantAnalysis):
     pass
 
+
 class MLP(MLPClassifier):
     pass
 
+
 class RFC(RandomForestClassifier):
     pass
+
 
 class SVM(SVC):
     def __init__(self, kernel='rbf', probability=True, gamma='scale', C=1):
@@ -52,6 +57,7 @@ class SVM(SVC):
             gamma=gamma,
             C=C
         )
+
 
 class MeanClassifier(BaseEstimator, ClassifierMixin):
     def __init__(self, models, weights=None):
@@ -80,4 +86,5 @@ class MeanClassifier(BaseEstimator, ClassifierMixin):
 
     def predict(self, X):
         y = np.argmax(self.predict_proba(X), axis=1)
+
         return y
