@@ -19,9 +19,6 @@ import time
 import pandas as pd
 import numpy as np
 
-from rdkit import Chem
-from rdkit.Chem import AllChem
-
 
 #############
 # Functions #
@@ -47,30 +44,6 @@ def load_from_csv(path, delimiter=','):
         raise FileNotFoundError('File "{}" does not exists.'.format(path))
 
     return pd.read_csv(path, delimiter=delimiter)
-
-
-def morgan_fingerprints(chemical_compounds, n_bits=128, use_features=True):
-    """Create a learning matrix 'X' with (Morgan) fingerprints
-    from the 'chemical_compounds' molecular structures.
-
-    Inputs
-    ------
-    chemical_compounds : array [n_chem, 1] or list [n_chem,]
-        chemical_compounds[i] is a string describing the ith chemical
-        compound
-
-    Output
-    ------
-    X : array [n_chem, n_bits]
-        generated (Morgan) fingerprints for each chemical compound, which
-        represent presence or absence of substructures.
-    """
-
-    X = [Chem.MolFromSmiles(x) for x in chemical_compounds]
-    X = [AllChem.GetMorganFingerprintAsBitVect(x, 2, nBits=n_bits, useFeatures=use_features) for x in X]
-    X = np.array(X)
-
-    return X
 
 
 def make_submission(y_predicted, auc_predicted, file_name='submission', date=True, indexes=None):

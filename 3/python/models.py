@@ -50,14 +50,7 @@ class RFC(RandomForestClassifier):
 
 
 class SVM(SVC):
-    def __init__(self, kernel='rbf', probability=True, gamma='scale', C=1):
-        super().__init__(
-            kernel=kernel,
-            probability=probability,
-            gamma=gamma,
-            C=C
-        )
-
+    pass
 
 class MeanClassifier(BaseEstimator, ClassifierMixin):
     def __init__(self, models, weights=None):
