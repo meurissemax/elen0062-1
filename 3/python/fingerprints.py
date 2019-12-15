@@ -19,7 +19,7 @@ from rdkit import Chem
 from rdkit.Chem.AllChem import GetMorganFingerprintAsBitVect
 from rdkit.Chem.MACCSkeys import GenMACCSKeys
 from rdkit.Chem.rdmolops import RDKFingerprint, LayeredFingerprint
-from rdkit.Avalon.pyAvalonTools import GetAvalonCountFP
+from rdkit.Avalon.pyAvalonTools import GetAvalonFP
 
 
 ###########
@@ -49,5 +49,5 @@ def layer(fpSize=2048):
     return lambda x: LayeredFingerprint(x, fpSize=fpSize)
 
 
-def avalon(fpSize=2048):
-    return lambda x: GetAvalonCountFP(x, fpSize=fpSize)
+def avalon(n_bits=2048):
+    return lambda x: GetAvalonFP(x, nBits=n_bits)

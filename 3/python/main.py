@@ -20,7 +20,7 @@ from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import cross_val_score, ShuffleSplit
 
 from models import DTC, KNN, LDA, MLP, RFC, SVM
-from models import MeanClassifier, ConcensusClassifier
+from models import VC, SC, ConsensusClassifier
 
 import fingerprints 
 import kernels
@@ -41,7 +41,7 @@ DESTINATION = '../products/'
 FINGERPRINT = fingerprints.morgan()
 
 # Model to train
-MODEL = ConcensusClassifier([KNN(n_neighbors=17), MLP(random_state=0), SVM(gamma='auto', random_state=0, probability=True), RFC(500, random_state=0)])
+MODEL = ConsensusClassifier([KNN(n_neighbors=17), MLP(random_state=0), SVM(gamma='auto', random_state=0, probability=True), RFC(500, random_state=0)])
 
 
 
