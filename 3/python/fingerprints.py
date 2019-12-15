@@ -16,9 +16,10 @@ Authors :
 import numpy as np
 
 from rdkit import Chem
-from rdkit.Chem import AllChem, MACCSkeys
-from rdkit.Chem.AtomPairs import Pairs
+from rdkit.Chem.AllChem import GetMorganFingerprintAsBitVect
+from rdkit.Chem.MACCSkeys import GenMACCSKeys
 from rdkit.Chem.rdmolops import RDKFingerprint, LayeredFingerprint
+from rdkit.Avalon.pyAvalonTools import GetAvalonCountFP
 
 
 ###########
@@ -32,11 +33,11 @@ def transform(X, f):
 
 
 def morgan(radius=2, n_bits=128, use_features=True):
-    return lambda x: AllChem.GetMorganFingerprintAsBitVect(x, radius, nBits=n_bits, useFeatures=use_features)
+    return lambda x: GetMorganFingerprintAsBitVect(x, radius, nBits=n_bits, useFeatures=use_features)
 
 
 def maccs():
-    return lambda x: MACCSkeys.GenMACCSKeys(x)
+    return lambda x: GenMACCSKeys(x)
 
 
 def rdk(fpSize=2048):
@@ -45,3 +46,7 @@ def rdk(fpSize=2048):
 
 def layer(fpSize=2048):
     return lambda x: LayeredFingerprint(x, fpSize=fpSize)
+
+
+def avalon(fpSize=2048):
+    return lambda x: GetAvalonCountFP(x, fpSize=fpSize)
