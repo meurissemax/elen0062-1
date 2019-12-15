@@ -44,6 +44,7 @@ FINGERPRINT = fingerprints.morgan()
 MODEL = ConcensusClassifier([KNN(n_neighbors=17), MLP(random_state=0), SVM(gamma='auto', random_state=0, probability=True), RFC(500, random_state=0)])
 
 
+
 ########
 # Main #
 ########
