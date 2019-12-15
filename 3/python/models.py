@@ -22,7 +22,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from mlxtend.classifier import StackingClassifier
 from sklearn.svm import SVC
 
 
@@ -50,42 +51,19 @@ class RFC(RandomForestClassifier):
     pass
 
 
-class SVM(SVC):
+class SVM(SVC): # probability=True
     pass
 
 
-class MeanClassifier(BaseEstimator, ClassifierMixin):
-    def __init__(self, models, weights=None):
-        if weights is None:
-            self.weights = [1] * len(models)
-        else:
-            self.weights = weights
-
-        self.models = models
-
-    def fit(self, X, y):
-        for model in self.models:
-            model.fit(X, y)
-
-        return self
-
-    def predict_proba(self, X):
-        proba = np.zeros((X.shape[0], 2))
-
-        for i, model in enumerate(self.models):
-            proba += model.predict_proba(X) * self.weights[i]
-
-        proba /= sum(self.weights)
-
-        return proba
-
-    def predict(self, X):
-        y = np.argmax(self.predict_proba(X), axis=1)
-
-        return y
+class VC(VotingClassifier): # voting='soft'
+    pass
 
 
-class ConcensusClassifier(BaseEstimator, ClassifierMixin):
+class SC(StackingClassifier): # use_probas=True, average_probas=False
+    pass
+
+
+class ConsensusClassifier(BaseEstimator, ClassifierMixin):
     def __init__(self, models, majority=None):
         self.models = models
 
