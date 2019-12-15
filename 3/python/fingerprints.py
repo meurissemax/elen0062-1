@@ -25,6 +25,7 @@ from rdkit.Avalon.pyAvalonTools import GetAvalonCountFP
 ###########
 # Methods #
 ###########
+
 def transform(X, f):
     X = [f(Chem.MolFromSmiles(x)) for x in X]
     X = np.array(X)
