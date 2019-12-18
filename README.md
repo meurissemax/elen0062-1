@@ -11,3 +11,8 @@ Projects realized as part of the *Introduction to machine learning* course given
 * **Maxime Meurisse** - [meurissemax](https://github.com/meurissemax)
 * **François Rozet** - [Donshel](https://github.com/Donshel) (for project 3 only)
 * **Valentin Vermeylen** - [ValentinVermeylen](https://github.com/ValentinVermeylen)
+
+## Scores
+
+* Project 1 received a score of **17.8/20**.
+* Project 2 received a score of **18/20**.
