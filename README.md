@@ -16,3 +16,4 @@ Projects realized as part of the *Introduction to machine learning* course given
 
 * Project 1 received a score of **17.8/20**.
 * Project 2 received a score of **18/20**.
+* Project 3 received a score of **17/20**.
