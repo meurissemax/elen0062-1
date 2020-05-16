@@ -11,19 +11,4 @@
 ##########
 
 **/__pycache__/
-
-
-##########
-# Others #
-##########
-
-**/products/
-**/resources/
-
-
-##############
-# Exceptions #
-##############
-
-!**/latex/resources/
-!/3/resources/
+*.pyc
